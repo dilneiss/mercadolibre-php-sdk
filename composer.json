@@ -17,16 +17,16 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.0",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "guzzlehttp/guzzle": "*"
+        "guzzlehttp/guzzle": "^7.4.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.4",
-        "squizlabs/php_codesniffer": "~2.6",
-        "friendsofphp/php-cs-fixer": "~2.12"
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "*",
+        "friendsofphp/php-cs-fixer": "*"
     },
     "autoload": {
         "psr-4": { "Meli\\" : "lib/" }

@@ -143,10 +143,11 @@ $apiInstance = new Meli\Api\RestClientApi(
 );
 $resource = 'resource_example'; // string | 
 $access_token = 'access_token_example'; // string | 
+$options = ['headers' => ['access_token' => $access_token]]; // array |
 $body = new \stdClass; // object | 
 
 try {
-    $result = $apiInstance->resourcePost($resource, $access_token, $body);
+    $result = $apiInstance->resourcePost($resource, $options, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling RestClientApi->resourcePost: ', $e->getMessage(), PHP_EOL;

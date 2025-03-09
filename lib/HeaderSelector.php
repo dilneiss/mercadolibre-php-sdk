@@ -81,7 +81,8 @@ class HeaderSelector
      */
     private function selectAcceptHeader($accept)
     {
-        if (count($accept) === 0 || (count($accept) === 1 && $accept[0] === '')) {
+        $countAccept = $accept ? count($accept) : 0;
+        if ($countAccept === 0 || $countAccept === 1 && $accept[0] === '') {
             return null;
         } elseif ($jsonAccept = preg_grep('~(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$~', $accept)) {
             return implode(',', $jsonAccept);
@@ -99,7 +100,8 @@ class HeaderSelector
      */
     private function selectContentTypeHeader($contentType)
     {
-        if (count($contentType) === 0 || (count($contentType) === 1 && $contentType[0] === '')) {
+        $countContentType = $contentType ? count($contentType) : 0;
+        if ( $countContentType === 0 || $countContentType === 1 && $contentType[0] === '') {
             return 'application/json';
         } elseif (preg_grep("/application\/json/i", $contentType)) {
             return 'application/json';

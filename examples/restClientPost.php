@@ -11,7 +11,7 @@ $apiInstance = new Meli\Api\RestClientApi(
 );
 $resource = 'items'; // A resource example like items, search, category, etc.
 $access_token = 'access_token_example'; // Your access token.
-
+$options = ['headers' => ['access_token' => $access_token]];
 $body = json_decode('{
   "title": "Item de test - No Ofertar",
   "category_id": "MLA5991",
@@ -72,7 +72,7 @@ $body = json_decode('{
 }');
 
 try {
-    $result = $apiInstance->resourcePost($resource, $access_token, $body);
+    $result = $apiInstance->resourcePost($resource, $options, $body);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling RestClientApi->resourcePost: ', $e->getMessage(), PHP_EOL;

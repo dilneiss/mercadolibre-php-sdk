@@ -1,34 +1,13 @@
-![No longer maintained](https://img.shields.io/badge/Maintenance-OFF-red.svg)
+![No longer maintained](https://img.shields.io/badge/Maintenance-ON-green.svg)
 
-### [DEPRECATED] This repository is no longer maintained
-
-> From the first week of April 2021 we will stop maintaining our SDKs.
->
-> This project is not functional, the dependencies will not be updated to latest ones.
->
-> We recommend you read our [documentation](https://developers.mercadolibre.com).
-
-  <a href="https://developers.mercadolibre.com">
-    <img src="https://user-images.githubusercontent.com/1153516/73021269-043c2d80-3e06-11ea-8d0e-6e91441c2900.png" alt="Mercado Libre Developers" width="200"></a>
-  </a>
-
----
-
-<br>
 <h1 align="center">
-  <a href="https://developers.mercadolibre.com">
-    <img src="https://user-images.githubusercontent.com/1153516/29861072-689ec57e-8d3e-11e7-8368-dd923543258f.jpg" alt="Mercado Libre Developers" width="230"></a>
-  </a>
-  <br><br>
   MercadoLibre's PHP SDK
-  <br>
 </h1>
-
 <h4 align="center">This is the official PHP SDK for MercadoLibre's Platform.</h4>
 
 ## Requirements
 
-PHP 5.5 and later
+PHP 8.0 and later
 
 ## Installation & Usage
 
@@ -38,14 +17,8 @@ To install the bindings via [Composer](http://getcomposer.org/), add the followi
 
 ```json
 {
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/mercadolibre/php-sdk.git"
-    }
-  ],
   "require": {
-    "mercadolibre/php-sdk": "*@dev"
+    "climba-commerce/mercadolibre-php-sdk": "^v3.1"
   }
 }
 ```
@@ -156,10 +129,11 @@ $apiInstance = new Meli\Api\RestClientApi(
 );
 $resource = 'resource_example'; // string | for example: items
 $access_token = 'access_token_example'; // string |
+$options = ['headers' => ['access_token' => $access_token]]; // array |
 $body = new \stdClass; // object |
 
 try {
-    $apiInstance->resourcePost($resource, $access_token, $body);
+    $apiInstance->resourcePost($resource, $options, $body);
 } catch (Exception $e) {
     echo 'Exception when calling RestClientApi->resourcePost: ', $e->getMessage(), PHP_EOL;
 }

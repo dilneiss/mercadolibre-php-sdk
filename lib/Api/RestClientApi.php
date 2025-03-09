@@ -374,7 +374,7 @@ class RestClientApi
 
             } else {
                 // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+                $httpBody = \GuzzleHttp\Psr7\Query::build($formParams);
             }
         }
 
@@ -400,7 +400,7 @@ class RestClientApi
         $already_querys = ($encode_url != $resourcePath) ? true : false;
         $resourcePath = str_replace('%2F', '/', $resourcePath);
 
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\Query::build($queryParams);
         return new Request(
             'DELETE',
             $this->config->getHost() . $resourcePath . ($already_querys ? "&{$query}" : "?{$query}"),
@@ -668,7 +668,7 @@ class RestClientApi
 
             } else {
                 // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+                $httpBody = \GuzzleHttp\Psr7\Query::build($formParams);
             }
         }
 
@@ -694,7 +694,7 @@ class RestClientApi
         $already_querys = ($encode_url != $resourcePath) ? true : false;
         $resourcePath = str_replace('%2F', '/', $resourcePath);
 
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\Query::build($queryParams);
         return new Request(
             'GET',
             $this->config->getHost() . $resourcePath . ($already_querys ? "&{$query}" : "?{$query}"),
@@ -709,16 +709,16 @@ class RestClientApi
      * Resourse path POST
      *
      * @param  string $resource resource (required)
-     * @param  string $access_token access_token (required)
+     * @param  array $options options (required)
      * @param  object $body body (required)
      *
      * @throws \Meli\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return object
      */
-    public function resourcePost($resource, $access_token, $body)
+    public function resourcePost($resource, $options, $body)
     {
-        list($response) = $this->resourcePostWithHttpInfo($resource, $access_token, $body);
+        list($response) = $this->resourcePostWithHttpInfo($resource, $options, $body);
         return $response;
     }
 
@@ -728,16 +728,16 @@ class RestClientApi
      * Resourse path POST
      *
      * @param  string $resource (required)
-     * @param  string $access_token (required)
+     * @param  array $options (required)
      * @param  object $body (required)
      *
      * @throws \Meli\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of object, HTTP status code, HTTP response headers (array of strings)
      */
-    public function resourcePostWithHttpInfo($resource, $access_token, $body)
+    public function resourcePostWithHttpInfo($resource, $options, $body)
     {
-        $request = $this->resourcePostRequest($resource, $access_token, $body);
+        $request = $this->resourcePostRequest($resource, $options, $body);
 
         try {
             $options = $this->createHttpClientOption();
@@ -818,15 +818,15 @@ class RestClientApi
      * Resourse path POST
      *
      * @param  string $resource (required)
-     * @param  string $access_token (required)
+     * @param  array $options (required)
      * @param  object $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function resourcePostAsync($resource, $access_token, $body)
+    public function resourcePostAsync($resource, $options, $body)
     {
-        return $this->resourcePostAsyncWithHttpInfo($resource, $access_token, $body)
+        return $this->resourcePostAsyncWithHttpInfo($resource, $options, $body)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -840,16 +840,16 @@ class RestClientApi
      * Resourse path POST
      *
      * @param  string $resource (required)
-     * @param  string $access_token (required)
+     * @param  array $options (required)
      * @param  object $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function resourcePostAsyncWithHttpInfo($resource, $access_token, $body)
+    public function resourcePostAsyncWithHttpInfo($resource, $options, $body)
     {
         $returnType = 'object';
-        $request = $this->resourcePostRequest($resource, $access_token, $body);
+        $request = $this->resourcePostRequest($resource, $options, $body);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -889,14 +889,17 @@ class RestClientApi
      * Create request for operation 'resourcePost'
      *
      * @param  string $resource (required)
-     * @param  string $access_token (required)
+     * @param  array $options (required)
      * @param  object $body (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function resourcePostRequest($resource, $access_token, $body)
+    protected function resourcePostRequest($resource, $options, $body)
     {
+        $headers = isset($options['headers']) ? $options['headers'] : [];
+        $queryParams = isset($options['queryParams']) ? $options['queryParams'] : [];
+
         // verify the required parameter 'resource' is set
         if ($resource === null || (is_array($resource) && count($resource) === 0)) {
             throw new \InvalidArgumentException(
@@ -904,7 +907,7 @@ class RestClientApi
             );
         }
         // verify the required parameter 'access_token' is set
-        if ($access_token === null || (is_array($access_token) && count($access_token) === 0)) {
+        if ($headers['access_token'] === null || (is_array($headers['access_token']) && count($headers['access_token']) === 0)) {
             throw new \InvalidArgumentException(
                 'Missing the required parameter $access_token when calling resourcePost'
             );
@@ -918,7 +921,6 @@ class RestClientApi
 
         $resourcePath = '/{resource}';
         $formParams = [];
-        $queryParams = [];
         $headerParams = [];
         $httpBody = '';
         $multipart = false;
@@ -941,13 +943,13 @@ class RestClientApi
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
                 ['application/json'],
-                $access_token
+                $headers['access_token']
             );
         } else {
             $headers = $this->headerSelector->selectHeaders(
                 ['application/json'],
-                ['application/json'],
-                $access_token
+                $headers['content_type'],
+                $headers['access_token']
             );
         }
 
@@ -976,7 +978,7 @@ class RestClientApi
 
             } else {
                 // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+                $httpBody = \GuzzleHttp\Psr7\Query::build($formParams);
             }
         }
 
@@ -1002,7 +1004,7 @@ class RestClientApi
         $already_querys = ($encode_url != $resourcePath) ? true : false;
         $resourcePath = str_replace('%2F', '/', $resourcePath);
 
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\Query::build($queryParams);
         return new Request(
             'POST',
             $this->config->getHost() . $resourcePath . ($already_querys ? "&{$query}" : "?{$query}"),
@@ -1284,7 +1286,7 @@ class RestClientApi
 
             } else {
                 // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+                $httpBody = \GuzzleHttp\Psr7\Query::build($formParams);
             }
         }
 
@@ -1310,7 +1312,7 @@ class RestClientApi
         $already_querys = ($encode_url != $resourcePath) ? true : false;
         $resourcePath = str_replace('%2F', '/', $resourcePath);
 
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        $query = \GuzzleHttp\Psr7\Query::build($queryParams);
         return new Request(
             'PUT',
             $this->config->getHost() . $resourcePath . ($already_querys ? "&{$query}" : "?{$query}"),
